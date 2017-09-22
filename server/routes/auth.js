@@ -14,4 +14,15 @@ router.get('/facebook/return',
   }
 );
 
+router.get('/user', (req, res) => {
+  res.json(req.user);
+})
+
+router.get('/logout',
+  function (req, res) {
+    req.logout();
+    res.redirect('/');
+  }
+);
+
 module.exports = router;

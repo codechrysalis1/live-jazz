@@ -15,7 +15,7 @@ const auth = require('./routes/auth');
 passport.use(new Strategy({
     clientID: process.env.APP_ID,
     clientSecret: process.env.APP_SECRET,
-    callbackURL: 'http://localhost:3000/login/facebook/return'
+    callbackURL: 'http://localhost:3000/auth/facebook/return'
   },
   function (accessToken, refreshToken, profile, cb) {
     return cb(null, profile);
@@ -45,7 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', express.static('build'));
 app.use('/api', routes); // API calls
-app.use('/login', auth); // auth calls
+app.use('/auth', auth); // auth calls
 app.use('/*', express.static('build'));
 
 // catch 404 and forward to error handler - test
