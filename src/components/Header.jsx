@@ -11,11 +11,23 @@ class Header extends Component {
     user && this.props.onComponentDidMount(user);
   }
 
+  get authButton() {
+    if(this.props.user) {
+      return (
+        <div id='facebook-login'>
+          <a href=''> { this.props.user.displayName } </a>
+          <a href='/auth/logout'> Logout </a>
+        </div>
+      )
+    }
+    return <a id='facebook-login' href='/auth/facebook'>Log in with Facebook</a>;
+  }
+
   render() {
     return (
       <header>
         <h1 id='title'>Live Jazz</h1>
-        { this.props.user ? <a id='facebook-login' href=''> { this.props.user.displayName } </a> : <a id='facebook-login' href='/auth/facebook'>Log in with Facebook</a> }
+        { this.authButton }
       </header>
     )
   }
