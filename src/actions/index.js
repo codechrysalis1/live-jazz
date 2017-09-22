@@ -113,6 +113,13 @@ export function setEndTimeField(event) {
   };
 }
 
+export function setUser(user) {
+  return {
+    type: 'SET_USER',
+    user,
+  };
+}
+
 export function addNewEvent(event, history) {
   return async (dispatch) => {
     try {

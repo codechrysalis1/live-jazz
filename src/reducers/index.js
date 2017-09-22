@@ -14,6 +14,7 @@ const initialState = {
     startTime: '',
     endTime: '',
   },
+  user: undefined,
 };
 
 const reducer = (state = initialState, action) => {
@@ -68,6 +69,9 @@ const reducer = (state = initialState, action) => {
       break;
     case 'SET_ADD_EVENT_RESPONSE':
       newState = Object.assign({}, state, { addEventResponse: action.addEventResponse });
+      break;
+    case 'SET_USER':
+      newState = Object.assign({}, state, { user: action.user });
       break;
     default:
       console.log('UNKNOWN ACTION', action.type);

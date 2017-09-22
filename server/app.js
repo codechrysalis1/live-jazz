@@ -3,9 +3,39 @@ const path = require('path');
 const logger = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+var passport = require('passport');
+var Strategy = require('passport-facebook').Strategy;
+require('dotenv').config();
 
 const app = express();
 const routes = require('./routes');
+const auth = require('./routes/auth');
+
+// https://github.com/passport/express-4.x-facebook-example
+passport.use(new Strategy({
+    clientID: process.env.APP_ID,
+    clientSecret: process.env.APP_SECRET,
+    callbackURL: 'http://localhost:3000/auth/facebook/return'
+  },
+  function (accessToken, refreshToken, profile, cb) {
+    return cb(null, profile);
+  }
+));
+
+passport.serializeUser(function (user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function (obj, cb) {
+  cb(null, obj);
+});
+
+app.use(require('cookie-parser')());
+app.use(require('body-parser').urlencoded({ extended: true }));
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -15,6 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', express.static('build'));
 app.use('/api', routes); // API calls
+app.use('/auth', auth); // auth calls
 app.use('/*', express.static('build'));
 
 // catch 404 and forward to error handler - test
