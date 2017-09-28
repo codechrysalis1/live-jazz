@@ -47,7 +47,7 @@ const mapDispatchToProps = (dispatch) => {
       network: 'facebook',
       socialToken,
     });
-    if (response.userProfile.email) {
+    if (response.jwt && response.userProfile.email) {
       dispatch(setUserProfile(response.userProfile));
     }
     if (response.jwt) {
@@ -66,7 +66,7 @@ const mapDispatchToProps = (dispatch) => {
       );
       let scopes = responseA.authResponse.granted_scopes.split(',');
       console.log(scopes);
-      while (scopes !== undefined || scopes.indexOf('email') < 0) {
+      while (scopes === undefined || scopes.indexOf('email') < 0) {
         responseA = await facebook.login({
           scope: 'email',
           auth_type: 'rerequest',
@@ -76,11 +76,11 @@ const mapDispatchToProps = (dispatch) => {
         scopes = responseA.authResponse.granted_scopes.split(',');
         console.log(scopes);
       }
-      const userProfile = await facebook.api('me');
-      console.log(userProfile);
-      if (userProfile) {
-        dispatch(setUserProfile(userProfile));
-      }
+      // const userProfile = await facebook.api('me');
+      // console.log(userProfile);
+      // if (userProfile) {
+      //   dispatch(setUserProfile(userProfile));
+      // }
     },
     onLogoutButtonClick: () => {
       window.hello.logout('facebook');
