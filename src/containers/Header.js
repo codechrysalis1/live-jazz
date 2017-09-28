@@ -1,7 +1,6 @@
 import { connect } from 'react-redux';
-import Header from '../components/Header';
-import { promisify } from 'util';
 
+import Header from '../components/Header';
 import { setJWT, setUserProfile, logout } from '../actions';
 
 const mapStateToProps = state => ({
@@ -67,7 +66,7 @@ const mapDispatchToProps = (dispatch) => {
       );
       let scopes = responseA.authResponse.granted_scopes.split(',');
       console.log(scopes);
-      while(scopes.indexOf('email') === -1) {
+      while (scopes.indexOf('email') === -1) {
         responseA = await facebook.login({
           scope: 'email',
           auth_type: 'rerequest',
