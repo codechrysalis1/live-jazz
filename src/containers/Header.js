@@ -47,7 +47,7 @@ const mapDispatchToProps = (dispatch) => {
       network: 'facebook',
       socialToken,
     });
-    if (response.userProfile.name) {
+    if (response.userProfile.email) {
       dispatch(setUserProfile(response.userProfile));
     }
     if (response.jwt) {
@@ -66,7 +66,7 @@ const mapDispatchToProps = (dispatch) => {
       );
       let scopes = responseA.authResponse.granted_scopes.split(',');
       console.log(scopes);
-      while (scopes.indexOf('email') === -1) {
+      while (scopes !== undefined || scopes.indexOf('email') < 0) {
         responseA = await facebook.login({
           scope: 'email',
           auth_type: 'rerequest',
