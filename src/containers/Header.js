@@ -65,7 +65,6 @@ const mapDispatchToProps = (dispatch) => {
         },
       );
       let scopes = responseA.authResponse.granted_scopes.split(',');
-      console.log(scopes);
       while (scopes === undefined || scopes.indexOf('email') < 0) {
         responseA = await facebook.login({
           scope: 'email',
@@ -74,13 +73,7 @@ const mapDispatchToProps = (dispatch) => {
           return_scopes: true,
         });
         scopes = responseA.authResponse.granted_scopes.split(',');
-        console.log(scopes);
       }
-      // const userProfile = await facebook.api('me');
-      // console.log(userProfile);
-      // if (userProfile) {
-      //   dispatch(setUserProfile(userProfile));
-      // }
     },
     onLogoutButtonClick: () => {
       window.hello.logout('facebook');
