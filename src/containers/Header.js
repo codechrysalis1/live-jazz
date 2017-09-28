@@ -1,5 +1,6 @@
 import { connect } from 'react-redux';
 import Header from '../components/Header';
+import { promisify } from 'util';
 
 import { setJWT, setUserProfile, logout } from '../actions';
 
@@ -55,23 +56,32 @@ const mapDispatchToProps = (dispatch) => {
     }
   });
   return {
-    onLoginButtonClick: () => {
+    onLoginButtonClick: async () => {
       const facebook = window.hello('facebook');
-      facebook.login(
+      let responseA = await facebook.login(
         {
           scope: 'email',
-          force: true,
+          // force: true,
+          return_scopes: true,
         },
-      ).then(() => {
-        return facebook.api('me');
-      }).then((response) => {
-        if (response.userProfile) {
-          dispatch(setUserProfile(response.userProfile));
-        }
-        if (response.jwt) {
-          dispatch(setJWT(response.jwt));
-        }
-      });
+      );
+      let scopes = responseA.authResponse.granted_scopes.split(',');
+      console.log(scopes);
+      while(scopes.indexOf('email') === -1) {
+        responseA = await facebook.login({
+          scope: 'email',
+          auth_type: 'rerequest',
+          force: true,
+          return_scopes: true,
+        });
+        scopes = responseA.authResponse.granted_scopes.split(',');
+        console.log(scopes);
+      }
+      const userProfile = await facebook.api('me');
+      console.log(userProfile);
+      if (userProfile) {
+        dispatch(setUserProfile(userProfile));
+      }
     },
     onLogoutButtonClick: () => {
       window.hello.logout('facebook');
