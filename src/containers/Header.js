@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
-import Header from '../components/Header';
 
+import Header from '../components/Header';
 import { setJWT, setUserProfile, logout } from '../actions';
 
 const mapStateToProps = state => ({
@@ -47,7 +47,7 @@ const mapDispatchToProps = (dispatch) => {
       network: 'facebook',
       socialToken,
     });
-    if (response.userProfile.name) {
+    if (response.jwt && response.userProfile.email) {
       dispatch(setUserProfile(response.userProfile));
     }
     if (response.jwt) {
@@ -55,22 +55,25 @@ const mapDispatchToProps = (dispatch) => {
     }
   });
   return {
-    onLoginButtonClick: () => {
+    onLoginButtonClick: async () => {
       const facebook = window.hello('facebook');
-      facebook.login(
+      let responseA = await facebook.login(
         {
           scope: 'email',
+          // force: true,
+          return_scopes: true,
         },
-      ).then(() => {
-        return facebook.api('me');
-      }).then((response) => {
-        if (response.userProfile) {
-          dispatch(setUserProfile(response.userProfile));
-        }
-        if (response.jwt) {
-          dispatch(setJWT(response.jwt));
-        }
-      });
+      );
+      let scopes = responseA.authResponse.granted_scopes.split(',');
+      while (scopes === undefined || scopes.indexOf('email') < 0) {
+        responseA = await facebook.login({
+          scope: 'email',
+          auth_type: 'rerequest',
+          force: true,
+          return_scopes: true,
+        });
+        scopes = responseA.authResponse.granted_scopes.split(',');
+      }
     },
     onLogoutButtonClick: () => {
       window.hello.logout('facebook');

@@ -6,7 +6,8 @@
     "func-names": ["error", "never"],
     "no-console": "off",
     "arrow-body-style": "off",
-    "class-methods-use-this": "off"
+    "class-methods-use-this": "off",
+    "no-await-in-loop": "off"
   },
 
   "globals": {
